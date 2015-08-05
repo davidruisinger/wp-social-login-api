@@ -11,7 +11,7 @@ class SL_API_Login {
 		$login_route = array(
 			// Login endpoint
 			constant('SL_API_INTERNAL_PREFIX') . '/login' => array(
-				array( array( $this, 'login'), WP_JSON_Server::CREATABLE ),
+				array(array($this, 'login'), WP_JSON_Server::CREATABLE | WP_JSON_Server::HIDDEN_ENDPOINT )
 			),
 		);
 
