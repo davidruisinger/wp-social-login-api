@@ -51,7 +51,7 @@ class SL_API_User {
 						$user->meta = array_map( function( $a ){ return $a[0]; }, get_user_meta( $user->ID ) );
 
 						// Return a formatted user
-						$formatted_user = format_user($user);
+						$formatted_user = $this->get_format_user($user);
 						return $formatted_user;
 					} else {
 						return new WP_Error( 'sl_api_social_account_not_found', __( 'There\'s no account matching the provided ID' ), array( 'status' => 400 ) );
