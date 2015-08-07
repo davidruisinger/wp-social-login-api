@@ -119,8 +119,11 @@ class SL_API_User {
 
 							// Check if the directory for the images is already prsent and create it if not
 							if (wp_mkdir_p($upload_dir[basedir] . '/mima_images/profile_pics')) {
-								// Create gthe image from the base64 string and save it to the directory
-								$image = base64_decode($user_meta[mima_profile_picture]);
+								// Remove the base64 declaration from the base64 image string (separated with a comma from the real data)
+								$image_data = explode(',', $user_meta[mima_profile_picture])[1];
+
+								// Create the image from the base64 string and save it to the directory
+								$image = base64_decode($image_data);
 								file_put_contents($upload_dir[basedir] . '/mima_images/profile_pics/user_' . $user_id . '.jpeg', $image);
 
 								// Add the new image URL to the meta data
