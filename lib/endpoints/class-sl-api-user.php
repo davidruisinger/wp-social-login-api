@@ -111,6 +111,23 @@ class SL_API_User {
 							return new WP_Error( 'sl_api_social_account_not_found', __( 'There\'s no account matching the ID provied in the JSON' ), array( 'status' => 400 ) );
 						}
 
+						// Check if a new profile picture is passed String is NOT an URL and it is NOT empty
+						if (!$this->validateURL( $user_meta[mima_profile_picture] ) && $user_meta[mima_profile_picture] != '') {
+							
+							// Get the upload directory
+							$upload_dir = wp_upload_dir();
+
+							// Check if the directory for the images is already prsent and create it if not
+							if (wp_mkdir_p($upload_dir[basedir] . '/mima_images/profile_pics')) {
+								// Create gthe image from the base64 string and save it to the directory
+								$image = base64_decode($user_meta[mima_profile_picture]);
+								file_put_contents($upload_dir[basedir] . '/mima_images/profile_pics/user_' . $user_id . '.jpeg', $image);
+
+								// Add the new image URL to the meta data
+								$user_meta[mima_profile_picture] = $upload_dir[baseurl] . '/mima_images/profile_pics/user_' . $user_id . '.jpeg';
+							};
+						}
+
 						// Update the user's meta data
 						foreach($user_meta as $key => $val){
 							//array_push($test, $key);
@@ -118,14 +135,14 @@ class SL_API_User {
 						}
 
 						// Get the updated user info
-						$newUserData = get_userdata($user_id)->data;
+						$updatedUserData = get_userdata($user_id)->data;
 
 						// Get the meta data for the user
-						$newUserData->meta = array_map( function( $a ){ return $a[0]; }, get_user_meta( $user_id ) );
+						$updatedUserData->meta = array_map( function( $a ){ return $a[0]; }, get_user_meta( $user_id ) );
 
 						// Return a formatted user
-						$formatted_user = $this->get_format_user($newUserData);
-						return $newUserData;
+						$formatted_user = $this->get_format_user($updatedUserData);
+						return $updatedUserData;
 					} else {
 						return new WP_Error( 'sl_api_social_account_not_found', __( 'There\'s no account matching the provided ID' ), array( 'status' => 400 ) );
 					}
@@ -184,4 +201,28 @@ class SL_API_User {
 
 		return $formatted_user;
 	}
+
+
+	/**
+	 * Helper function to check if a string is a valid URL
+	 *
+	 * @param string $url the string that should be an URL
+	 * @return boolean true if the URL is valid
+	 */
+	private function validateURL( $url ) {
+		$regex = "((https?|ftp)\:\/\/)?"; // SCHEME 
+		$regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?"; // User and Pass 
+		$regex .= "([a-z0-9-.]*)\.([a-z]{2,3})"; // Host or IP 
+		$regex .= "(\:[0-9]{2,5})?"; // Port 
+		$regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?"; // Path 
+		$regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?"; // GET Query 
+		$regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?"; // Anchor 
+
+		if(preg_match("/^$regex$/", $url)) { 
+			return true; 
+		} else {
+			return false;
+		}
+	}
+
 }
