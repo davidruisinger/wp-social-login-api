@@ -122,12 +122,15 @@ class SL_API_User {
 								// Remove the base64 declaration from the base64 image string (separated with a comma from the real data)
 								$image_data = explode(',', $user_meta[mima_profile_picture])[1];
 
+								// Generate a timestamp for the filename to prevent caching in the apps
+								$timestamp = time();
+
 								// Create the image from the base64 string and save it to the directory
 								$image = base64_decode($image_data);
-								file_put_contents($upload_dir[basedir] . '/mima_images/profile_pics/user_' . $user_id . '.jpeg', $image);
+								file_put_contents($upload_dir[basedir] . '/mima_images/profile_pics/user_' . $user_id . '_' . $timestamp . '_' . '.jpeg', $image);
 
 								// Add the new image URL to the meta data
-								$user_meta[mima_profile_picture] = $upload_dir[baseurl] . '/mima_images/profile_pics/user_' . $user_id . '.jpeg';
+								$user_meta[mima_profile_picture] = $upload_dir[baseurl] . '/mima_images/profile_pics/user_' . $user_id . '_' . $timestamp . '_' . '.jpeg';
 							};
 						}
 
