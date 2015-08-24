@@ -79,6 +79,12 @@ class USER_API_User {
 			// Remove the password because we won't update it at all
 			unset($user_info['user_pass']);
 
+			// Check if the email already exists and if yes, if it belongs to another user
+			$user_with_same_email = get_user_by( 'email', $user_info['user_email'] );
+			if ( $user_with_same_email && $user_with_same_email->ID != intval($id) ) {
+				return new WP_Error( 'USER_api_user_email_exists', __( 'This email is already taken by another user.' ), array( 'status' => 400 ) );
+			}
+
 			// Update the basic user info
 			$user_id = wp_update_user( $user_info );
 			if ( is_wp_error( $user_id ) ) {

@@ -20,6 +20,7 @@ define ( 'USER_API_INTERNAL_PREFIX' , '/user-api-plugin' );
 include_once( dirname( __FILE__ ) . '/lib/validation.php' );
 include_once( dirname( __FILE__ ) . '/lib/endpoints/class-user-api-login.php' );
 include_once( dirname( __FILE__ ) . '/lib/endpoints/class-user-api-user.php' );
+include_once( dirname( __FILE__ ) . '/lib/endpoints/class-user-api-password.php' );
 include_once( dirname( __FILE__ ) . '/lib/endpoints/class-user-api-nonce.php' );
 
 
@@ -79,6 +80,10 @@ function USER_api_endpoints( $server ) {
 	// User
 	$USER_api_user = new USER_API_User();
 	add_filter( 'json_endpoints', array( $USER_api_user, 'register_routes' ), 0 );
+
+	// Password
+	$USER_api_password = new USER_API_Password();
+	add_filter( 'json_endpoints', array( $USER_api_password, 'register_routes' ), 0 );
 
 	// Nonce
 	$USER_api_nonce = new USER_API_Nonce();

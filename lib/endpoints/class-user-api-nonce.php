@@ -8,14 +8,14 @@ class USER_API_Nonce {
 	 * @return array Modified routes
 	 */
 	public function register_routes( $routes ) {
-		$login_route = array(
-			// Login endpoint
+		$nonce_route = array(
+			// Nonce endpoint
 			constant('USER_API_INTERNAL_PREFIX') . '/nonce' => array(
 				array(array($this, 'get_nonce'), WP_JSON_Server::READABLE | WP_JSON_Server::HIDDEN_ENDPOINT )
 			),
 		);
 
-		return array_merge( $routes, $login_route );
+		return array_merge( $routes, $nonce_route );
 	}
 
 
