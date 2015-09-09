@@ -192,11 +192,11 @@ class USER_API_Login {
 		$social_id_meta_key = '_' . $provider .'_id';
 
 		// Check if this user already exists in the database based on the social_id (meta field)
-		$existing_user = get_users( array( 'meta_key' => $social_id_meta_key, 'meta_value' => $user_meta[$social_id_meta_key] ) );
+		$existing_users = get_users( array( 'meta_key' => $social_id_meta_key, 'meta_value' => $user_meta[$social_id_meta_key] ) );
 
-		if ( $existing_user ) {
+		if ( $existing_users ) {
 			// User already exists, log him in
-			return $this->login( $user_obj->ID, $user_meta );
+			return $this->login( $existing_users[0]->ID, $user_meta );
 		} else {
 			// Create a new user
 			return $this->register( $user, $user_meta );
